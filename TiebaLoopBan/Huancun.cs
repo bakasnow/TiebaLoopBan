@@ -1,48 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 using TiebaLib;
 
 namespace TiebaLoopBan
 {
-    class Huancun
+    /// <summary>
+    /// Fid缓存
+    /// </summary>
+    public class FidHuanCun
     {
         /// <summary>
         /// Fid缓存列表
         /// </summary>
-        private static readonly List<FidHuancunJiegou> FidHuancunLiebiao = new List<FidHuancunJiegou>();
+        private static readonly List<JieGou> LieBiao = new List<JieGou>();
 
         /// <summary>
         /// 获取Fid
         /// </summary>
-        /// <param name="tiebaname"></param>
+        /// <param name="tiebaName"></param>
         /// <returns></returns>
-        public static string GetFid(string tiebaname)
+        public static string GetFid(string tiebaName)
         {
             //先判断缓存里有没有
-            foreach (FidHuancunJiegou fidCanshu in FidHuancunLiebiao)
+            foreach (JieGou fidCanShu in LieBiao)
             {
-                if (fidCanshu.Tiebaname == tiebaname)
+                if (fidCanShu.TiebaName == tiebaName)
                 {
-                    return fidCanshu.Fid;
+                    return fidCanShu.Fid;
                 }
             }
 
             //获取
-            string fid = "";
+            string fid = string.Empty;
             for (int i = 0; i < 3; i++)
             {
-                fid = Tieba.GetTiebaFid(tiebaname);
-                if (fid != "")
+                fid = Tieba.GetTiebaFid(tiebaName);
+                if (!string.IsNullOrEmpty(fid))
                 {
-                    FidHuancunJiegou fidCanshu = new FidHuancunJiegou
+                    JieGou fidCanShu = new JieGou
                     {
-                        Tiebaname = tiebaname,
+                        TiebaName = tiebaName,
                         Fid = fid
                     };
-                    FidHuancunLiebiao.Add(fidCanshu);
+                    LieBiao.Add(fidCanShu);
                     break;
                 }
             }
@@ -51,17 +51,51 @@ namespace TiebaLoopBan
         }
 
         /// <summary>
-        /// 批量添加列表
+        /// Fid缓存结构
         /// </summary>
-        public static List<string> PiliangTianjiaLiebiao = new List<string>();
+        public class JieGou
+        {
+            /// <summary>
+            /// 贴吧名
+            /// </summary>
+            public string TiebaName;
+
+            /// <summary>
+            /// Fid
+            /// </summary>
+            public string Fid;
+        }
     }
 
     /// <summary>
-    /// Fid缓存结构
+    /// 批量添加缓存
     /// </summary>
-    class FidHuancunJiegou
+    public class PiLiangTianJiaHuanCun 
     {
-        public string Tiebaname;
-        public string Fid;
+        /// <summary>
+        /// 批量添加列表
+        /// </summary>
+        public static List<JieGou> LieBiao = new List<JieGou>();
+
+        /// <summary>
+        /// 批量添加结构
+        /// </summary>
+        public class JieGou 
+        {
+            /// <summary>
+            /// 贴吧名
+            /// </summary>
+            public string TiebaName;
+
+            /// <summary>
+            /// ID
+            /// </summary>
+            public string Id;
+
+            /// <summary>
+            /// 添加成功
+            /// </summary>
+            public bool TianJiaChengGong;
+        }
     }
 }
