@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-
-using TiebaLib;
+using TiebaApi.TiebaWebApi;
 
 namespace TiebaLoopBan
 {
@@ -19,11 +18,13 @@ namespace TiebaLoopBan
         /// </summary>
         /// <param name="tiebaName"></param>
         /// <returns></returns>
-        public static string GetFid(string tiebaName)
+        public static long GetFid(string tiebaName)
         {
             //先判断缓存里有没有
             foreach (JieGou fidCanShu in LieBiao)
             {
+               // Form1.Say($"{fidCanShu.TiebaName} {fidCanShu.Fid}");
+
                 if (fidCanShu.TiebaName == tiebaName)
                 {
                     return fidCanShu.Fid;
@@ -31,11 +32,11 @@ namespace TiebaLoopBan
             }
 
             //获取
-            string fid = string.Empty;
+            long fid = 0;
             for (int i = 0; i < 3; i++)
             {
-                fid = Tieba.GetTiebaFid(tiebaName);
-                if (!string.IsNullOrEmpty(fid))
+                fid = TiebaWeb.GetTiebaFid(tiebaName);
+                if (fid >= 0)
                 {
                     JieGou fidCanShu = new JieGou
                     {
@@ -63,14 +64,14 @@ namespace TiebaLoopBan
             /// <summary>
             /// Fid
             /// </summary>
-            public string Fid;
+            public long Fid;
         }
     }
 
     /// <summary>
     /// 批量添加缓存
     /// </summary>
-    public class PiLiangTianJiaHuanCun 
+    public class PiLiangTianJiaHuanCun
     {
         /// <summary>
         /// 批量添加列表
@@ -80,7 +81,7 @@ namespace TiebaLoopBan
         /// <summary>
         /// 批量添加结构
         /// </summary>
-        public class JieGou 
+        public class JieGou
         {
             /// <summary>
             /// 贴吧名
@@ -88,14 +89,14 @@ namespace TiebaLoopBan
             public string TiebaName;
 
             /// <summary>
-            /// ID
+            /// 头像ID
             /// </summary>
-            public string Id;
+            public string TouXiangID;
 
             /// <summary>
-            /// 添加成功
+            /// 主显账号
             /// </summary>
-            public bool TianJiaChengGong;
+            public string ZhuXianZhangHao;
         }
     }
 }

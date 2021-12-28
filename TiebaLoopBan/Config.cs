@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace TiebaLoopBan
+﻿namespace TiebaLoopBan
 {
     static class Config
     {
@@ -15,11 +13,11 @@ namespace TiebaLoopBan
         public const string PeiZhiMing = "配置1";
         public static int SaoMiaoJianGe = 0;
         public static int FengJinJianGe = 0;
-        public static int ChongShiCiShu = 0;
+        //public static int ChongShiCiShu = 0;
         public static int ChongShiJianGe = 0;
 
         //全局参数
         public static string Cookie = string.Empty;
-        public static string YongHuMing = string.Empty;
+        public static string ZhuXianZhangHao = string.Empty;
     }
 }
