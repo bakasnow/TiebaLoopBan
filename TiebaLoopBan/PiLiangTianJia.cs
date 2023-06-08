@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TiebaApi.TiebaAppApi;
@@ -42,7 +42,7 @@ namespace TiebaLoopBan
         /// <param name="e"></param>
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-            label4.Text = $"封禁时长：{Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2)}天";
+            label_fengJinShiChang.Text = $"封禁时长：{Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2)}天";
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace TiebaLoopBan
         /// <param name="e"></param>
         private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
         {
-            label4.Text = $"封禁时长：{Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2)}天";
+            label_fengJinShiChang.Text = $"封禁时长：{Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2)}天";
         }
 
         /// <summary>
@@ -75,6 +75,8 @@ namespace TiebaLoopBan
             button_day_type1.Enabled = false;
             button_day_type2.Enabled = false;
             button_day_type3.Enabled = false;
+            radioButton1.Enabled = false;
+            radioButton2.Enabled = false;
 
             Task.Run(() =>
             {
@@ -89,6 +91,12 @@ namespace TiebaLoopBan
                 string[] yongHuMingDan = textBox1.Text.Split(Environment.NewLine.ToCharArray());
 
                 string shiBaiMingDan = string.Empty;
+
+                //用户名为纯数字的识别方式
+                bool isTiebaHao = radioButton2.Checked;
+
+                //初始化时间戳，减11秒保证第一次运行
+                DateTime tiebaHaoShiJianChuo = DateTime.Now.AddSeconds(-11);
 
                 //过滤+去重复
                 PiLiangTianJiaHuanCun.LieBiao = new List<PiLiangTianJiaHuanCun.JieGou>();
@@ -111,9 +119,19 @@ namespace TiebaLoopBan
 
                     //分类
                     string touXiangID = "", zhuXianZhangHao = "";
-                    //贴吧数字ID
-                    if (Regex.IsMatch(fenGe[1], "^[0-9]{1,}$"))
+
+                    //用户名是纯数字，并且是贴吧号
+                    if (Regex.IsMatch(fenGe[1], "^[0-9]{1,}$") && isTiebaHao)
                     {
+                        //贴吧号添加间隔大于10秒
+                        while ((DateTime.Now - tiebaHaoShiJianChuo).TotalSeconds < 10)
+                        {
+                            Thread.Sleep(500);
+                        }
+
+                        //更新时间戳
+                        tiebaHaoShiJianChuo = DateTime.Now;
+
                         TiebaYongHuSouSuoJieGou tiebaYongHuSouSuoJieGou = TiebaApp.TiebaYongHuSouSuo(Convert.ToInt64(fenGe[1]));
                         if (tiebaYongHuSouSuoJieGou.HuoQuChengGong)
                         {
@@ -127,7 +145,7 @@ namespace TiebaLoopBan
                         TiebaMingPianJieGou mingPianJieGou = TiebaWeb.GetTiebaMingPian(fenGe[1]);
                         if (mingPianJieGou.HuoQuChengGong)
                         {
-                            touXiangID = mingPianJieGou.TouXiang;
+                            touXiangID = mingPianJieGou.TouXiangID;
                             zhuXianZhangHao = Tools.HuoQuZhuXianZhangHao(mingPianJieGou);
                         }
                     }
@@ -175,14 +193,14 @@ namespace TiebaLoopBan
                     }
 
                     //数据库检查重复
-                    if (Form1.access.GetDataTable($"select * from 封禁列表 where 头像='{mingPianJieGou.TouXiang}' and 贴吧名='{tiebaName}'").Rows.Count > 0)
+                    if (DB.access.GetDataTable($"select * from 封禁列表 where 头像='{mingPianJieGou.TouXiangID}' and 贴吧名='{tiebaName}'").Rows.Count > 0)
                     {
                         chongFuShu++;
                         continue;
                     }
 
-                    int jieGuo = Form1.access.DoCommand($"insert into 封禁列表 (用户名,头像,贴吧名,最后封禁时间,循环开始时间,循环结束时间)" +
-                        $" values('{Tools.HuoQuZhuXianZhangHao(mingPianJieGou)}','{mingPianJieGou.TouXiang}','{tiebaName}','1970-01-01','{kaiShiShiJian}','{jieShuShiJian}')");
+                    int jieGuo = DB.access.DoCommand($"insert into 封禁列表 (用户名,头像,贴吧名,最后封禁时间,循环开始时间,循环结束时间)" +
+                        $" values('{Tools.HuoQuZhuXianZhangHao(mingPianJieGou)}','{mingPianJieGou.TouXiangID}','{tiebaName}','1970-01-01','{kaiShiShiJian}','{jieShuShiJian}')");
                     if (jieGuo > 0)
                     {
                         chengGongShu++;
@@ -216,6 +234,8 @@ namespace TiebaLoopBan
                 button_day_type1.Enabled = true;
                 button_day_type2.Enabled = true;
                 button_day_type3.Enabled = true;
+                radioButton1.Enabled = true;
+                radioButton2.Enabled = true;
                 button1.Enabled = true;
             });
         }

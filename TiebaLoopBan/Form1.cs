@@ -38,11 +38,6 @@ namespace TiebaLoopBan
         }
 
         /// <summary>
-        /// 数据库连接
-        /// </summary>
-        public static Access access = new Access(Application.StartupPath + @"\TiebaLoopBan.mdb");
-
-        /// <summary>
         /// 版本验证
         /// </summary>
         /// <returns></returns>
@@ -105,7 +100,7 @@ namespace TiebaLoopBan
                     string target = BST.JieQuWenBen(html, "<link>", "</link>");
                     if (!string.IsNullOrEmpty(target))
                     {
-                        Process.Start("iexplore.exe", target);
+                        Process.Start(target);
                     }
 
                     return false;
@@ -136,10 +131,10 @@ namespace TiebaLoopBan
             }
 
             //打开数据库
-            access.Open();
+            DB.access.Open();
 
             //校验数据库版本
-            string dbv = Convert.ToString(access.GetDataResult("select top 1 版本号 from 数据库版本"));
+            string dbv = Convert.ToString(DB.access.GetDataResult("select top 1 版本号 from 数据库版本"));
             if (dbv != Config.DataBaseVersion)
             {
                 string msg = "数据库版本不符，无法正常使用\n" +
@@ -152,9 +147,9 @@ namespace TiebaLoopBan
             }
 
             //为第一次访问初始化
-            if (access.GetDataTable($"select * from 基本设置 where 配置名='{Config.PeiZhiMing}'").Rows.Count == 0)
+            if (DB.access.GetDataTable($"select * from 基本设置 where 配置名='{Config.PeiZhiMing}'").Rows.Count == 0)
             {
-                access.DoCommand($"insert into 基本设置 (配置名,Cookie,扫描间隔,封禁间隔,重试次数,重试间隔) values('{Config.PeiZhiMing}','',60,10,1,10)");
+                DB.access.DoCommand($"insert into 基本设置 (配置名,Cookie,扫描间隔,封禁间隔,重试次数,重试间隔) values('{Config.PeiZhiMing}','',60,10,1,10)");
             }
 
             Text = "贴吧循环封禁 v" + Config.Version;
@@ -167,9 +162,8 @@ namespace TiebaLoopBan
             toolStripProgressBar1.Alignment = ToolStripItemAlignment.Right;
 
             //读取基本配置
-            Config.Cookie = Convert.ToString(access.GetDataResult($"select Cookie from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
-            textBox1.Text = Convert.ToString(access.GetDataResult($"select 封禁间隔 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
-            //textBox2.Text = Convert.ToString(access.GetDataResult($"select 重试次数 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
+            Config.Cookie = Convert.ToString(DB.access.GetDataResult($"select Cookie from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
+            textBox1.Text = Convert.ToString(DB.access.GetDataResult($"select 封禁间隔 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
 
             //更新封禁列表
             GengXinFengJinLieBiao();
@@ -177,7 +171,7 @@ namespace TiebaLoopBan
             //账号验证
             ZhangHaoYanZheng(true);
 
-            Say("贴吧管理器交流群：984150818");
+            Say("贴吧管理器交流群：984150818（免费下载吧务工具）");
 
             //是否自启动
             if (IsZiQiDong && !string.IsNullOrEmpty(Config.ZhuXianZhangHao))
@@ -204,7 +198,7 @@ namespace TiebaLoopBan
         /// </summary>
         public void GengXinFengJinLieBiao()
         {
-            DataTable dt = access.GetDataTable("select * from 封禁列表");
+            DataTable dt = DB.access.GetDataTable("select * from 封禁列表");
 
             listView1.Items.Clear();
             listView1.BeginUpdate();
@@ -232,8 +226,8 @@ namespace TiebaLoopBan
         /// </summary>
         private void Save()
         {
-            access.DoCommand($"update 基本设置 set Cookie='{Config.Cookie}' where 配置名='{Config.PeiZhiMing}'");
-            access.DoCommand($"update 基本设置 set 封禁间隔={textBox1.Text} where 配置名='{Config.PeiZhiMing}'");
+            DB.access.DoCommand($"update 基本设置 set Cookie='{Config.Cookie}' where 配置名='{Config.PeiZhiMing}'");
+            DB.access.DoCommand($"update 基本设置 set 封禁间隔={textBox1.Text} where 配置名='{Config.PeiZhiMing}'");
         }
 
         /// <summary>
@@ -250,7 +244,7 @@ namespace TiebaLoopBan
             }
 
             Save();
-            access.Close();
+            DB.access.Close();
         }
 
         /// <summary>
@@ -258,11 +252,11 @@ namespace TiebaLoopBan
         /// </summary>
         private void JiBenCanShu()
         {
-            Config.Cookie = Convert.ToString(access.GetDataResult($"select Cookie from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
-            Config.SaoMiaoJianGe = Convert.ToInt32(access.GetDataResult($"select 扫描间隔 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
-            //Config.ChongShiCiShu = Convert.ToInt32(access.GetDataResult($"select 重试次数 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
-            Config.FengJinJianGe = Convert.ToInt32(access.GetDataResult($"select 封禁间隔 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
-            Config.ChongShiJianGe = Convert.ToInt32(access.GetDataResult($"select 重试间隔 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
+            Config.Cookie = Convert.ToString(DB.access.GetDataResult($"select Cookie from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
+            Config.SaoMiaoJianGe = Convert.ToInt32(DB.access.GetDataResult($"select 扫描间隔 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
+            //Config.ChongShiCiShu = Convert.ToInt32(DB.access.GetDataResult($"select 重试次数 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
+            Config.FengJinJianGe = Convert.ToInt32(DB.access.GetDataResult($"select 封禁间隔 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
+            Config.ChongShiJianGe = Convert.ToInt32(DB.access.GetDataResult($"select 重试间隔 from 基本设置 where 配置名='{Config.PeiZhiMing}'"));
         }
 
         /// <summary>
@@ -282,15 +276,13 @@ namespace TiebaLoopBan
                 }
 
                 label3.Text = "未登录";
-                button1.Enabled = true;
-                button2.Enabled = false;
+                button1.Text = "登录账号";
                 return false;
             }
             else
             {
                 label3.Text = Config.ZhuXianZhangHao;
-                button1.Enabled = false;
-                button2.Enabled = true;
+                button1.Text = "删除账号";
                 return true;
             }
         }
@@ -301,8 +293,8 @@ namespace TiebaLoopBan
         /// <param name="b"></param>
         private void PiLiangJinYongKongJian(bool b)
         {
+            button1.Enabled = b;
             textBox1.Enabled = b;
-            //textBox2.Enabled = b;
         }
 
         /// <summary>
@@ -316,20 +308,22 @@ namespace TiebaLoopBan
 
             if (button3.Text == "开始")
             {
-                if (string.IsNullOrEmpty(BST.JianYiZhengZe(textBox1.Text, "([0-9]{1,})")))
+                if (!int.TryParse(BST.JianYiZhengZe(textBox1.Text, "([0-9]{1,})"), out int fengJinJianGe))
                 {
                     MessageBox.Show("封禁间隔格式错误", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
                     button3.Enabled = true;
                     return;
                 }
 
-                if (Convert.ToInt32(textBox1.Text) < 5)
+                if (fengJinJianGe < 3)
                 {
-                    MessageBox.Show("为了操作安全，封禁间隔不得低于5秒", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
-                    textBox1.Text = "5";
+                    MessageBox.Show("为了操作安全，封禁间隔不得低于3秒", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                    textBox1.Text = "3";
                     button3.Enabled = true;
                     return;
                 }
+
+                textBox1.Text = Convert.ToString(fengJinJianGe);
 
                 Save();//先保存
                 JiBenCanShu();//初始化参数
@@ -384,29 +378,22 @@ namespace TiebaLoopBan
                 }
 
                 //删除过期
-                int shanChuShu = access.DoCommand($"delete from 封禁列表 where 循环结束时间<'{DateTime.Now:yyyy-MM-dd}'");
+                int shanChuShu = DB.access.DoCommand($"delete from 封禁列表 where 循环结束时间<'{DateTime.Now:yyyy-MM-dd}'");
                 if (shanChuShu > 0)
                 {
                     Say($"删除{shanChuShu}条过期任务");
                 }
 
-                int weiFengJinShu = 0;
-                int lieBiaoZongShu = listView1.Items.Count;
 
-                for (int i = 0; i < listView1.Items.Count; i++)
-                {
-                    if ((DateTime.Now - Convert.ToDateTime(listView1.Items[i].SubItems[3].Text)).Days > 0)
-                    {
-                        weiFengJinShu++;
-                    }
-                }
+                //循环前初始化进度条
+                int weiFengJinShu = (int)DB.access.GetDataResult("select count(*) from 封禁列表 where DateDiff(\"d\", now(), 最后封禁时间)<0");
+                int lieBiaoZongShu = (int)DB.access.GetDataResult("select count(*) from 封禁列表");
 
                 toolStripStatusLabel1.Text = $"未封禁数：{weiFengJinShu}   列表总数：{lieBiaoZongShu}";
 
                 toolStripProgressBar1.Minimum = 0;
                 toolStripProgressBar1.Maximum = lieBiaoZongShu;
                 toolStripProgressBar1.Value = lieBiaoZongShu - weiFengJinShu;
-
 
                 //开始遍历
                 for (int i = 0; i < listView1.Items.Count; i++)
@@ -416,7 +403,7 @@ namespace TiebaLoopBan
                     string dangQianShiJian = DateTime.Now.ToString("yyyy-MM-dd");
 
                     string id = listView1.Items[i].SubItems[0].Text;
-                    DataTable dt = access.GetDataTable($"select top 1 * from 封禁列表 where ID={id}");
+                    DataTable dt = DB.access.GetDataTable($"select top 1 * from 封禁列表 where ID={id}");
                     if (dt.Rows.Count == 0)
                     {
                         continue;
@@ -443,7 +430,7 @@ namespace TiebaLoopBan
 
                             //写进数据库
                             string sqlStr = $"update 封禁列表 set 用户名='{zhuXianZhangHao}',头像='{touXiang}' where ID={id}";
-                            if (access.DoCommand(sqlStr) == 0)
+                            if (DB.access.DoCommand(sqlStr) == 0)
                             {
                                 Say($"SQL执行失败：{sqlStr}");
                             }
@@ -478,13 +465,13 @@ namespace TiebaLoopBan
                     if (baWu.FengJin(day, liYou, out string msg))
                     {
                         Say($"{zhuXianZhangHao}在{tiebaName}吧，封禁1天成功", zhuXianZhangHao, touXiang);
-                        int jieGuo = access.DoCommand($"update 封禁列表 set 最后封禁时间='{dangQianShiJian}' where ID={id}");
+                        int jieGuo = DB.access.DoCommand($"update 封禁列表 set 最后封禁时间='{dangQianShiJian}' where ID={id}");
                         if (jieGuo > 0)
                         {
                             listView1.Items[i].SubItems[3].Text = dangQianShiJian;
                         }
 
-                        weiFengJinShu--;
+                        weiFengJinShu = (int)DB.access.GetDataResult("select count(*) from 封禁列表 where DateDiff(\"d\", now(), 最后封禁时间)<0");
                         toolStripStatusLabel1.Text = $"未封禁数：{weiFengJinShu}   列表总数：{lieBiaoZongShu}";
                         toolStripProgressBar1.Value = lieBiaoZongShu - weiFengJinShu;
 
@@ -542,38 +529,34 @@ namespace TiebaLoopBan
         {
             if (!Config.Stop) return;
 
-            BaiduLoginForm baiduLoginForm = new BaiduLoginForm();
-            baiduLoginForm.ShowDialog();
-            Config.Cookie = baiduLoginForm.Cookie;
-
-            ZhangHaoYanZheng();
-        }
-
-        /// <summary>
-        /// 删除账号
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (!Config.Stop) return;
-
-            if (MessageBox.Show(text: "确定要删除账号吗？", caption: "笨蛋雪说：操作不可逆", buttons: MessageBoxButtons.OKCancel, icon: MessageBoxIcon.Exclamation) == DialogResult.Cancel)
+            if (button1.Text.Contains("登录"))
             {
-                return;
-            }
+                //登录账号
+                BaiduLoginForm baiduLoginForm = new BaiduLoginForm();
+                baiduLoginForm.ShowDialog();
+                Config.Cookie = baiduLoginForm.Cookie;
 
-            if (access.DoCommand($"update 基本设置 set Cookie='' where 配置名='{Config.PeiZhiMing}'") > 0)
-            {
-                Config.Cookie = string.Empty;
-                Say("账号已成功删除");
-                label3.Text = "未登录";
-                button1.Enabled = true;
-                button2.Enabled = false;
+                ZhangHaoYanZheng();
             }
             else
             {
-                MessageBox.Show(text: "操作失败", caption: "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Error);
+                //删除账号
+                if (MessageBox.Show(text: "确定要删除账号吗？", caption: "笨蛋雪说：操作不可逆", buttons: MessageBoxButtons.OKCancel, icon: MessageBoxIcon.Exclamation) == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                if (DB.access.DoCommand($"update 基本设置 set Cookie='' where 配置名='{Config.PeiZhiMing}'") > 0)
+                {
+                    Config.Cookie = string.Empty;
+                    Say("账号已成功删除");
+                    label3.Text = "未登录";
+                    button1.Text = "登录账号";
+                }
+                else
+                {
+                    MessageBox.Show(text: "操作失败", caption: "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -635,7 +618,7 @@ namespace TiebaLoopBan
             BianJi bianJiForm = new BianJi(BianJi.ZhuangTaiLeiXing.XinJian, string.Empty);
             bianJiForm.ShowDialog();
 
-            string id = Convert.ToString(access.GetDataResult($"select ID from 封禁列表 where 头像='{bianJiForm.JieGou.TouXiang}' and 贴吧名='{bianJiForm.JieGou.TiebaName}'"));
+            string id = Convert.ToString(DB.access.GetDataResult($"select ID from 封禁列表 where 头像='{bianJiForm.JieGou.TouXiangID}' and 贴吧名='{bianJiForm.JieGou.TiebaName}'"));
             if (string.IsNullOrEmpty(id))
             {
                 return;
@@ -723,7 +706,7 @@ namespace TiebaLoopBan
             //从数据库中删除
             foreach (string id in ShanChuLieBiao)
             {
-                int jieGuo = access.DoCommand($"delete from 封禁列表 where ID={id}");
+                int jieGuo = DB.access.DoCommand($"delete from 封禁列表 where ID={id}");
                 if (jieGuo > 0)
                 {
                     //从列表中删除
@@ -968,14 +951,14 @@ namespace TiebaLoopBan
                 if (canshu.Length == 6)
                 {
                     //数据库检查重复
-                    if (access.GetDataTable($"select * from 封禁列表 where 头像='{canshu[1]}' and 贴吧名='{canshu[2]}'").Rows.Count > 0)
+                    if (DB.access.GetDataTable($"select * from 封禁列表 where 头像='{canshu[1]}' and 贴吧名='{canshu[2]}'").Rows.Count > 0)
                     {
                         shiBai += 1;
                         shiBaiMingDan += $"{canshu[0]}\t{canshu[1]}\t{canshu[2]}\t{canshu[3]}\t{canshu[4]}\t{canshu[5]}\n";
                         continue;
                     }
 
-                    int jieGuo = access.DoCommand($"insert into 封禁列表 (用户名,头像,贴吧名,最后封禁时间,循环开始时间,循环结束时间)" +
+                    int jieGuo = DB.access.DoCommand($"insert into 封禁列表 (用户名,头像,贴吧名,最后封禁时间,循环开始时间,循环结束时间)" +
                         $" values('{canshu[0]}','{canshu[1]}','{canshu[2]}','{canshu[3]}','{canshu[4]}','{canshu[5]}')");
                     if (jieGuo > 0)
                     {
@@ -1026,7 +1009,7 @@ namespace TiebaLoopBan
 
             StringBuilder sb = new StringBuilder();
 
-            DataTable dt = access.GetDataTable("select 用户名,头像,贴吧名,最后封禁时间,循环开始时间,循环结束时间 from 封禁列表");
+            DataTable dt = DB.access.GetDataTable("select 用户名,头像,贴吧名,最后封禁时间,循环开始时间,循环结束时间 from 封禁列表");
             foreach (DataRow dr in dt.Rows)
             {
                 sb.Append($"{Convert.ToString(dr["用户名"])}\t");
@@ -1055,21 +1038,21 @@ namespace TiebaLoopBan
         {
             if (listView2.SelectedItems.Count <= 0) return;
 
-            Clipboard.SetText(listView2.SelectedItems[0].SubItems[2].Text);
+            Tools.FuZhiDaoJianQieBan(listView2.SelectedItems[0].SubItems[2].Text);
         }
 
         private void 日志_复制用户名toolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listView2.SelectedItems.Count <= 0) return;
 
-            Clipboard.SetText(listView2.SelectedItems[0].Text);
+            Tools.FuZhiDaoJianQieBan(listView2.SelectedItems[0].Text);
         }
 
         private void 日志_复制头像IDtoolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listView2.SelectedItems.Count <= 0) return;
 
-            Clipboard.SetText(listView2.SelectedItems[0].SubItems[1].Text);
+            Tools.FuZhiDaoJianQieBan(listView2.SelectedItems[0].SubItems[1].Text);
         }
 
         private void 日志_访问TA的主页toolStripMenuItem_Click(object sender, EventArgs e)
@@ -1091,7 +1074,7 @@ namespace TiebaLoopBan
                 return;
             }
 
-            Process.Start("iexplore.exe", url);
+            Process.Start(url);
         }
 
         private void 清屏toolStripMenuItem_Click(object sender, EventArgs e)
@@ -1105,7 +1088,7 @@ namespace TiebaLoopBan
 
             string id = listView1.SelectedItems[0].Text;
 
-            Clipboard.SetText(FengJinXinXi.Get(id).YongHuMing);
+            Tools.FuZhiDaoJianQieBan(FengJinXinXi.Get(id).YongHuMing);
         }
 
         private void 列表_复制头像IDToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1114,7 +1097,7 @@ namespace TiebaLoopBan
 
             string id = listView1.SelectedItems[0].Text;
 
-            Clipboard.SetText(FengJinXinXi.Get(id).TouXiang);
+            Tools.FuZhiDaoJianQieBan(FengJinXinXi.Get(id).TouXiangID);
         }
 
         private void 列表_访问TA的主页ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1125,9 +1108,9 @@ namespace TiebaLoopBan
 
             FengJinXinXi.JieGou jieGou = FengJinXinXi.Get(id);
 
-            if (!string.IsNullOrEmpty(jieGou.TouXiang))
+            if (!string.IsNullOrEmpty(jieGou.TouXiangID))
             {
-                url = $"https://tieba.baidu.com/home/main?id={jieGou.TouXiang}";
+                url = $"https://tieba.baidu.com/home/main?id={jieGou.TouXiangID}";
             }
             else if (!string.IsNullOrEmpty(jieGou.YongHuMing))
             {
@@ -1138,7 +1121,7 @@ namespace TiebaLoopBan
                 return;
             }
 
-            Process.Start("iexplore.exe", url);
+            Process.Start(url);
         }
 
         private void 复制选中toolStripMenuItem_DropDownOpening(object sender, EventArgs e)
@@ -1157,7 +1140,7 @@ namespace TiebaLoopBan
                 列表_复制用户名ToolStripMenuItem.Text = $"复制用户名：{jieGou.YongHuMing}";
             }
 
-            if (string.IsNullOrEmpty(jieGou.TouXiang))
+            if (string.IsNullOrEmpty(jieGou.TouXiangID))
             {
                 列表_复制头像IDToolStripMenuItem.Enabled = false;
                 列表_复制头像IDToolStripMenuItem.Text = "复制头像ID（头像ID为空）";
@@ -1165,39 +1148,25 @@ namespace TiebaLoopBan
             else
             {
                 列表_复制头像IDToolStripMenuItem.Enabled = true;
-                列表_复制头像IDToolStripMenuItem.Text = $"复制头像ID：{jieGou.TouXiang}";
+                列表_复制头像IDToolStripMenuItem.Text = $"复制头像ID：{jieGou.TouXiangID}";
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 查找窗口
+        /// 防止重复开启
+        /// </summary>
+        private ChaZhao ChaZhaoFrom = new ChaZhao();
+
+        private void 查找toolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string str = textBox2.Text, sqlStr;
+            //创建窗口
+            ChaZhaoFrom = new ChaZhao
+            {
+                Form1ListView1 = listView1
+            };
 
-            if (str.StartsWith("tb."))
-            {
-                sqlStr = $"select top 1 ID from 封禁列表 where 头像 like '%{str}%'";
-            }
-            else
-            {
-                sqlStr = $"select top 1 ID from 封禁列表 where 用户名 like '%{str}%'";
-            }
-
-            string id = Convert.ToString(access.GetDataResult(sqlStr));
-            if (string.IsNullOrEmpty(id))
-            {
-                MessageBox.Show("未搜索到相关用户", "笨蛋雪说：", icon: MessageBoxIcon.Information, buttons: MessageBoxButtons.OK);
-                return;
-            }
-
-            for (int i = 0; i < listView1.Items.Count; i++)
-            {
-                if (listView1.Items[i].Text == id)
-                {
-                    //使该列可见
-                    listView1.Items[i].EnsureVisible();
-                    break;
-                }
-            }
+            ChaZhaoFrom.Show();
         }
     }
 }

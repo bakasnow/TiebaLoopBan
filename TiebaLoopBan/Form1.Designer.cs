@@ -37,17 +37,19 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.删除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.查找toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.复制选中toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.列表_复制用户名ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.列表_复制头像IDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.列表_访问TA的主页ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.导入ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.导出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button4 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -75,10 +77,6 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.复制选中toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.列表_复制用户名ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.列表_复制头像IDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.列表_访问TA的主页ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -95,83 +93,139 @@
             this.toolStripMenuItem1,
             this.删除ToolStripMenuItem,
             this.toolStripSeparator1,
+            this.查找toolStripMenuItem,
+            this.toolStripSeparator4,
             this.复制选中toolStripMenuItem,
             this.导入ToolStripMenuItem,
             this.导出ToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(125, 170);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(125, 198);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // 添加ToolStripMenuItem
             // 
             this.添加ToolStripMenuItem.Name = "添加ToolStripMenuItem";
-            this.添加ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.添加ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.添加ToolStripMenuItem.Text = "添加";
             this.添加ToolStripMenuItem.Click += new System.EventHandler(this.添加ToolStripMenuItem_Click);
             // 
             // 批量添加ToolStripMenuItem
             // 
             this.批量添加ToolStripMenuItem.Name = "批量添加ToolStripMenuItem";
-            this.批量添加ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.批量添加ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.批量添加ToolStripMenuItem.Text = "批量添加";
             this.批量添加ToolStripMenuItem.Click += new System.EventHandler(this.批量添加ToolStripMenuItem_Click);
             // 
             // 编辑ToolStripMenuItem
             // 
             this.编辑ToolStripMenuItem.Name = "编辑ToolStripMenuItem";
-            this.编辑ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.编辑ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.编辑ToolStripMenuItem.Text = "编辑";
             this.编辑ToolStripMenuItem.Click += new System.EventHandler(this.编辑ToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(121, 6);
             // 
             // 删除ToolStripMenuItem
             // 
             this.删除ToolStripMenuItem.Name = "删除ToolStripMenuItem";
-            this.删除ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.删除ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.删除ToolStripMenuItem.Text = "删除";
             this.删除ToolStripMenuItem.Click += new System.EventHandler(this.删除ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(121, 6);
+            // 
+            // 查找toolStripMenuItem
+            // 
+            this.查找toolStripMenuItem.Name = "查找toolStripMenuItem";
+            this.查找toolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.查找toolStripMenuItem.Text = "查找";
+            this.查找toolStripMenuItem.Click += new System.EventHandler(this.查找toolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(121, 6);
+            // 
+            // 复制选中toolStripMenuItem
+            // 
+            this.复制选中toolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.列表_复制用户名ToolStripMenuItem,
+            this.列表_复制头像IDToolStripMenuItem,
+            this.列表_访问TA的主页ToolStripMenuItem});
+            this.复制选中toolStripMenuItem.Name = "复制选中toolStripMenuItem";
+            this.复制选中toolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.复制选中toolStripMenuItem.Text = "复制选中";
+            this.复制选中toolStripMenuItem.DropDownOpening += new System.EventHandler(this.复制选中toolStripMenuItem_DropDownOpening);
+            // 
+            // 列表_复制用户名ToolStripMenuItem
+            // 
+            this.列表_复制用户名ToolStripMenuItem.Name = "列表_复制用户名ToolStripMenuItem";
+            this.列表_复制用户名ToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.列表_复制用户名ToolStripMenuItem.Text = "复制用户名";
+            this.列表_复制用户名ToolStripMenuItem.Click += new System.EventHandler(this.列表_复制用户名ToolStripMenuItem_Click);
+            // 
+            // 列表_复制头像IDToolStripMenuItem
+            // 
+            this.列表_复制头像IDToolStripMenuItem.Name = "列表_复制头像IDToolStripMenuItem";
+            this.列表_复制头像IDToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.列表_复制头像IDToolStripMenuItem.Text = "复制头像ID";
+            this.列表_复制头像IDToolStripMenuItem.Click += new System.EventHandler(this.列表_复制头像IDToolStripMenuItem_Click);
+            // 
+            // 列表_访问TA的主页ToolStripMenuItem
+            // 
+            this.列表_访问TA的主页ToolStripMenuItem.Name = "列表_访问TA的主页ToolStripMenuItem";
+            this.列表_访问TA的主页ToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.列表_访问TA的主页ToolStripMenuItem.Text = "访问TA的主页";
+            this.列表_访问TA的主页ToolStripMenuItem.Click += new System.EventHandler(this.列表_访问TA的主页ToolStripMenuItem_Click);
             // 
             // 导入ToolStripMenuItem
             // 
             this.导入ToolStripMenuItem.Name = "导入ToolStripMenuItem";
-            this.导入ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.导入ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.导入ToolStripMenuItem.Text = "导入";
             this.导入ToolStripMenuItem.Click += new System.EventHandler(this.导入ToolStripMenuItem_Click);
             // 
             // 导出ToolStripMenuItem
             // 
             this.导出ToolStripMenuItem.Name = "导出ToolStripMenuItem";
-            this.导出ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.导出ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.导出ToolStripMenuItem.Text = "导出";
             this.导出ToolStripMenuItem.Click += new System.EventHandler(this.导出ToolStripMenuItem_Click);
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Controls.Add(this.linkLabel1);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.button2);
-            this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Location = new System.Drawing.Point(12, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(227, 87);
+            this.groupBox2.Size = new System.Drawing.Size(227, 56);
             this.groupBox2.TabIndex = 23;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "登录账号";
+            this.groupBox2.Text = "当前账号";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(154, 20);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(63, 25);
+            this.button1.TabIndex = 0;
+            this.button1.TabStop = false;
+            this.button1.Text = "登录账号";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(187, 0);
+            this.linkLabel1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.linkLabel1.Location = new System.Drawing.Point(188, 0);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(29, 12);
             this.linkLabel1.TabIndex = 34;
@@ -183,85 +237,32 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("宋体", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(9, 53);
+            this.label3.Location = new System.Drawing.Point(10, 26);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(55, 15);
             this.label3.TabIndex = 25;
             this.label3.Text = "未登录";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 26);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 12);
-            this.label2.TabIndex = 24;
-            this.label2.Text = "当前账号：";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(154, 50);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(63, 24);
-            this.button2.TabIndex = 23;
-            this.button2.TabStop = false;
-            this.button2.Text = "删除账号";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(154, 20);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(63, 24);
-            this.button1.TabIndex = 22;
-            this.button1.TabStop = false;
-            this.button1.Text = "登录账号";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.button4);
-            this.groupBox3.Controls.Add(this.textBox2);
             this.groupBox3.Controls.Add(this.button3);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.textBox1);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Location = new System.Drawing.Point(245, 12);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(227, 87);
+            this.groupBox3.Size = new System.Drawing.Size(227, 56);
             this.groupBox3.TabIndex = 24;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "基本设置";
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(154, 50);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(63, 24);
-            this.button4.TabIndex = 30;
-            this.button4.TabStop = false;
-            this.button4.Text = "搜索";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(12, 53);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(136, 21);
-            this.textBox2.TabIndex = 29;
-            this.textBox2.Text = "请输入用户名或头像ID";
             // 
             // button3
             // 
             this.button3.Location = new System.Drawing.Point(154, 20);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(63, 24);
-            this.button3.TabIndex = 28;
+            this.button3.Size = new System.Drawing.Size(63, 25);
+            this.button3.TabIndex = 2;
             this.button3.TabStop = false;
             this.button3.Text = "开始";
             this.button3.UseVisualStyleBackColor = true;
@@ -282,7 +283,7 @@
             this.textBox1.Location = new System.Drawing.Point(69, 23);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(32, 21);
-            this.textBox1.TabIndex = 26;
+            this.textBox1.TabIndex = 1;
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label4
@@ -315,7 +316,7 @@
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
             this.listView2.Size = new System.Drawing.Size(460, 148);
-            this.listView2.TabIndex = 36;
+            this.listView2.TabIndex = 4;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.View = System.Windows.Forms.View.Details;
             // 
@@ -404,10 +405,10 @@
             this.columnHeader5});
             this.listView1.ContextMenuStrip = this.contextMenuStrip1;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(12, 105);
+            this.listView1.Location = new System.Drawing.Point(12, 74);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(460, 248);
-            this.listView1.TabIndex = 37;
+            this.listView1.Size = new System.Drawing.Size(460, 279);
+            this.listView1.TabIndex = 3;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             // 
@@ -418,7 +419,7 @@
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "用户名";
+            this.columnHeader1.Text = "主显账号";
             this.columnHeader1.Width = 100;
             // 
             // columnHeader2
@@ -464,43 +465,10 @@
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
             this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
             // 
-            // 复制选中toolStripMenuItem
-            // 
-            this.复制选中toolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.列表_复制用户名ToolStripMenuItem,
-            this.列表_复制头像IDToolStripMenuItem,
-            this.列表_访问TA的主页ToolStripMenuItem});
-            this.复制选中toolStripMenuItem.Name = "复制选中toolStripMenuItem";
-            this.复制选中toolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.复制选中toolStripMenuItem.Text = "复制选中";
-            this.复制选中toolStripMenuItem.DropDownOpening += new System.EventHandler(this.复制选中toolStripMenuItem_DropDownOpening);
-            // 
-            // 列表_复制用户名ToolStripMenuItem
-            // 
-            this.列表_复制用户名ToolStripMenuItem.Name = "列表_复制用户名ToolStripMenuItem";
-            this.列表_复制用户名ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.列表_复制用户名ToolStripMenuItem.Text = "复制用户名";
-            this.列表_复制用户名ToolStripMenuItem.Click += new System.EventHandler(this.列表_复制用户名ToolStripMenuItem_Click);
-            // 
-            // 列表_复制头像IDToolStripMenuItem
-            // 
-            this.列表_复制头像IDToolStripMenuItem.Name = "列表_复制头像IDToolStripMenuItem";
-            this.列表_复制头像IDToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.列表_复制头像IDToolStripMenuItem.Text = "复制头像ID";
-            this.列表_复制头像IDToolStripMenuItem.Click += new System.EventHandler(this.列表_复制头像IDToolStripMenuItem_Click);
-            // 
-            // 列表_访问TA的主页ToolStripMenuItem
-            // 
-            this.列表_访问TA的主页ToolStripMenuItem.Name = "列表_访问TA的主页ToolStripMenuItem";
-            this.列表_访问TA的主页ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.列表_访问TA的主页ToolStripMenuItem.Text = "访问TA的主页";
-            this.列表_访问TA的主页ToolStripMenuItem.Click += new System.EventHandler(this.列表_访问TA的主页ToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(484, 541);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.listView1);
@@ -509,6 +477,8 @@
             this.Controls.Add(this.groupBox2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(500, 580);
+            this.MinimumSize = new System.Drawing.Size(500, 580);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "贴吧循环封禁";
@@ -532,11 +502,7 @@
         #endregion
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label4;
@@ -573,12 +539,14 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.ToolStripMenuItem 复制选中toolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 列表_复制用户名ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 列表_复制头像IDToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 列表_访问TA的主页ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 查找toolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button1;
     }
 }
 

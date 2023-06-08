@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using TiebaApi.TiebaAppApi;
 using TiebaApi.TiebaJieGou;
 using TiebaApi.TiebaWebApi;
 
@@ -53,29 +55,49 @@ namespace TiebaLoopBan
         /// <param name="e"></param>
         private void Bianji_Load(object sender, EventArgs e)
         {
+            //将类型索引设为0
+            comboBox_ziDong_leiXing.SelectedIndex = 0;
+
             dateTimePicker1.Enabled = false;
 
             if (ZhuangTai == ZhuangTaiLeiXing.BianJi)
             {
                 Text = "编辑";
 
+                comboBox_ziDong_leiXing.Enabled = false;
+                textBox_ziDong_neiRong.Enabled = false;
+                button_ziDong_huoQu.Enabled = false;
+
                 textBox_tiebaName.Enabled = false;
                 textBox_touXiang.Enabled = false;
+
+                label_yongHuMing.Visible = false;
+                textBox_yongHuMing.Visible = false;
 
                 FengJinXinXi.JieGou jieGou = FengJinXinXi.Get(ID);
 
                 textBox_tiebaName.Text = jieGou.TiebaName;
-                textBox_touXiang.Text = jieGou.TouXiang;
+                textBox_touXiang.Text = jieGou.TouXiangID;
                 textBox_zhuXianZhangHao.Text = jieGou.ZhuXianZhangHao;
+                textBox_yongHuMing.Text = jieGou.YongHuMing;
                 dateTimePicker1.Value = Convert.ToDateTime(jieGou.XunHuanKaiShiShiJian);
                 dateTimePicker2.Value = Convert.ToDateTime(jieGou.XunHuanJieShuShiJian);
+
+                pictureBox_touXiang.ImageLocation = $"http://tb.himg.baidu.com/sys/portrait/item/{jieGou.TouXiangID}";
             }
             else
             {
                 Text = "新建";
 
+                comboBox_ziDong_leiXing.Enabled = true;
+                textBox_ziDong_neiRong.Enabled = true;
+                button_ziDong_huoQu.Enabled = true;
+
                 textBox_tiebaName.Enabled = true;
                 textBox_touXiang.Enabled = true;
+
+                label_yongHuMing.Visible = true;
+                textBox_yongHuMing.Visible = true;
 
                 dateTimePicker1.Value = DateTime.Now;
                 dateTimePicker2.Value = DateTime.Now.AddMonths(1);
@@ -118,52 +140,35 @@ namespace TiebaLoopBan
         {
             JieGou = new FengJinXinXi.JieGou
             {
-                TouXiang = textBox_touXiang.Text,
+                TouXiangID = textBox_touXiang.Text,
                 TiebaName = textBox_tiebaName.Text,
                 ZhuXianZhangHao = textBox_zhuXianZhangHao.Text,
+                YongHuMing = textBox_yongHuMing.Text,
                 XunHuanKaiShiShiJian = dateTimePicker1.Text,
                 XunHuanJieShuShiJian = dateTimePicker2.Text
             };
 
-            //自动获取头像ID
-            if (JieGou.ZhuXianZhangHao.Length > 0 && Tieba.GuoLvTouXiangID(JieGou.TouXiang).Length <= 0)
-            {
-                TiebaMingPianJieGou mingPianJieGou = TiebaWeb.GetTiebaMingPian(JieGou.ZhuXianZhangHao);
-                if (!mingPianJieGou.HuoQuChengGong)
-                {
-                    MessageBox.Show("头像ID获取失败，请人工填写或重试", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
-                    return;
-                }
-
-                pictureBox1.ImageLocation = $"http://tb.himg.baidu.com/sys/portrait/item/{mingPianJieGou.TouXiang}";
-
-                textBox_touXiang.Text = mingPianJieGou.TouXiang;
-                JieGou.TouXiang = mingPianJieGou.TouXiang;
-
-                if (MessageBox.Show("请查看头像，确定用户信息是否正确", "笨蛋雪说：", buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Information) == DialogResult.No)
-                {
-                    return;
-                }
-            }
-
             //新建
             if (ZhuangTai == ZhuangTaiLeiXing.XinJian)
             {
-                if (string.IsNullOrEmpty(JieGou.TouXiang))
+                if (string.IsNullOrEmpty(textBox_touXiang.Text))
                 {
-                    MessageBox.Show("请填写头像ID", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                    MessageBox.Show("头像ID不得为空", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                    JieGou = null;
                     return;
                 }
 
-                if (!JieGou.TouXiang.Contains("tb."))
+                if (string.IsNullOrEmpty(Tieba.GuoLvTouXiangID(textBox_touXiang.Text)))
                 {
                     MessageBox.Show("头像ID格式错误", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                    JieGou = null;
                     return;
                 }
 
                 if (string.IsNullOrEmpty(JieGou.TiebaName))
                 {
                     MessageBox.Show("请填写贴吧名", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                    JieGou = null;
                     return;
                 }
             }
@@ -172,32 +177,35 @@ namespace TiebaLoopBan
             if (Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2) <= 0)
             {
                 MessageBox.Show("封禁时长必须大于0", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                JieGou = null;
                 return;
             }
 
             //新建
             if (ZhuangTai == ZhuangTaiLeiXing.XinJian)
             {
-                TiebaMingPianJieGou mingPianJieGou = TiebaWeb.GetTiebaMingPian(JieGou.TouXiang);
-                if (!mingPianJieGou.HuoQuChengGong)
-                {
-                    MessageBox.Show("用户信息获取失败", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Error);
-                    return;
-                }
+                //TiebaMingPianJieGou mingPianJieGou = TiebaWeb.GetTiebaMingPian(JieGou.TouXiangID);
+                //if (!mingPianJieGou.HuoQuChengGong)
+                //{
+                //    MessageBox.Show("用户信息获取失败", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Error);
+                //    JieGou = null;
+                //    return;
+                //}
 
-                //更新任务参数
-                JieGou.ZhuXianZhangHao = mingPianJieGou.YongHuMing;
-                JieGou.TouXiang = mingPianJieGou.TouXiang;
+                ////更新任务参数
+                //JieGou.ZhuXianZhangHao = mingPianJieGou.YongHuMing;
+                //JieGou.TouXiangID = mingPianJieGou.TouXiangID;
 
                 //检查重复
-                if (Form1.access.GetDataTable($"select * from 封禁列表 where 头像='{JieGou.TouXiang}' and 贴吧名='{JieGou.TiebaName}'").Rows.Count > 0)
+                if (DB.access.GetDataTable($"select * from 封禁列表 where 头像='{JieGou.TouXiangID}' and 贴吧名='{JieGou.TiebaName}'").Rows.Count > 0)
                 {
                     MessageBox.Show($"{JieGou.ZhuXianZhangHao}已经在{JieGou.TiebaName}吧添加过了", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Asterisk);
+                    JieGou = null;
                     return;
                 }
 
-                int jieGuo = Form1.access.DoCommand($"insert into 封禁列表 (用户名,头像,贴吧名,最后封禁时间,循环开始时间,循环结束时间)" +
-                    $" values('{JieGou.ZhuXianZhangHao}','{JieGou.TouXiang}','{JieGou.TiebaName}','1970-01-01','{JieGou.XunHuanKaiShiShiJian}','{JieGou.XunHuanJieShuShiJian}')");
+                int jieGuo = DB.access.DoCommand($"insert into 封禁列表 (用户名,头像,贴吧名,最后封禁时间,循环开始时间,循环结束时间)" +
+                    $" values('{JieGou.ZhuXianZhangHao}','{JieGou.TouXiangID}','{JieGou.TiebaName}','1970-01-01','{JieGou.XunHuanKaiShiShiJian}','{JieGou.XunHuanJieShuShiJian}')");
                 if (jieGuo > 0)
                 {
                     Dispose();
@@ -205,12 +213,14 @@ namespace TiebaLoopBan
                 else
                 {
                     MessageBox.Show("添加失败", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Error);
+                    JieGou = null;
+                    return;
                 }
             }
             //编辑
             else if (ZhuangTai == ZhuangTaiLeiXing.BianJi)
             {
-                int jieGuo = Form1.access.DoCommand($"update 封禁列表 set 用户名='{JieGou.ZhuXianZhangHao}',循环开始时间='{JieGou.XunHuanKaiShiShiJian}',循环结束时间='{JieGou.XunHuanJieShuShiJian}' where 头像='{JieGou.TouXiang}' and 贴吧名='{JieGou.TiebaName}'");
+                int jieGuo = DB.access.DoCommand($"update 封禁列表 set 用户名='{JieGou.ZhuXianZhangHao}',循环开始时间='{JieGou.XunHuanKaiShiShiJian}',循环结束时间='{JieGou.XunHuanJieShuShiJian}' where 头像='{JieGou.TouXiangID}' and 贴吧名='{JieGou.TiebaName}'");
                 if (jieGuo > 0)
                 {
                     Dispose();
@@ -218,6 +228,8 @@ namespace TiebaLoopBan
                 else
                 {
                     MessageBox.Show("更新失败", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Error);
+                    JieGou = null;
+                    return;
                 }
             }
         }
@@ -229,7 +241,7 @@ namespace TiebaLoopBan
         /// <param name="e"></param>
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-            label5.Text = $"封禁时长：{Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2)}天";
+            label_fengJinShiChang.Text = $"封禁时长：{Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2)}天";
         }
 
         /// <summary>
@@ -239,12 +251,12 @@ namespace TiebaLoopBan
         /// <param name="e"></param>
         private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
         {
-            label5.Text = $"封禁时长：{Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2)}天";
+            label_fengJinShiChang.Text = $"封禁时长：{Tools.HuoQuFengJinShiChang(dateTimePicker1, dateTimePicker2)}天";
         }
 
         private void label8_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("头像ID可以封禁没有用户名的账号\n了解详情请加贴吧管理器交流群：984150818", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Information);
+            MessageBox.Show("头像ID可以封禁没有用户名的账号\n\n请使用上方“用户信息获取”功能获取头像ID", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Information);
         }
 
         /// <summary>
@@ -296,9 +308,158 @@ namespace TiebaLoopBan
                 return;
             }
 
-            pictureBox1.ImageLocation = $"http://tb.himg.baidu.com/sys/portrait/item/{touXiang}";
+            pictureBox_touXiang.ImageLocation = $"http://tb.himg.baidu.com/sys/portrait/item/{touXiang}";
 
+            textBox_touXiang.Text = mingPianJieGou.TouXiangID;
             textBox_zhuXianZhangHao.Text = Tools.HuoQuZhuXianZhangHao(mingPianJieGou);
+            textBox_yongHuMing.Text = mingPianJieGou.YongHuMing;
+        }
+
+        /// <summary>
+        /// 按钮 自动获取 被单击
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_ziDong_huoQu_Click(object sender, EventArgs e)
+        {
+            string neiRong = textBox_ziDong_neiRong.Text;
+            if (string.IsNullOrEmpty(neiRong))
+            {
+                return;
+            }
+
+            TiebaMingPianJieGou mingPianJieGou;
+            string touXiangID;
+
+            switch (comboBox_ziDong_leiXing.SelectedIndex)
+            {
+                case 0:
+                    mingPianJieGou = TiebaWeb.GetTiebaMingPian(neiRong);
+                    if (!mingPianJieGou.HuoQuChengGong)
+                    {
+                        MessageBox.Show("头像ID获取失败，请稍后重试", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    pictureBox_touXiang.ImageLocation = $"http://tb.himg.baidu.com/sys/portrait/item/{mingPianJieGou.TouXiangID}";
+
+                    textBox_touXiang.Text = mingPianJieGou.TouXiangID;
+                    textBox_zhuXianZhangHao.Text = Tools.HuoQuZhuXianZhangHao(mingPianJieGou);
+                    textBox_yongHuMing.Text = mingPianJieGou.YongHuMing;
+
+                    break;
+
+                case 1:
+                    //先从链接本身提取
+                    touXiangID = Tieba.GuoLvTouXiangID(neiRong);
+
+                    //链接本身提取成功
+                    if (!string.IsNullOrEmpty(touXiangID))
+                    {
+                        //直接去获取名片
+                    }
+                    ////从链接内获取
+                    //else if (neiRong.Contains("tieba.baidu.com/home/main"))
+                    //{
+                    //    //如果是个人主页
+                    //    string html = TiebaHttpHelper.Get(neiRong, Config.Cookie);
+
+                    //    Debug.WriteLine(html);
+
+                    //    //检查抓到的数据
+                    //    touXiangID = Tieba.GuoLvTouXiangID(BST.JieQuWenBen(html, "<a class=\"nav_icon nav_main\"", ">他的主页</a>"));
+
+                    //    Debug.WriteLine("----------------------------------");
+
+                    //    Debug.WriteLine(touXiangID);
+
+                    //    if (string.IsNullOrEmpty(touXiangID))
+                    //    {
+                    //        //如果头像ID不正确
+                    //        MessageBox.Show("头像ID获取失败，请稍后重试", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                    //        return;
+                    //    }
+                    //}
+                    else
+                    {
+                        MessageBox.Show("无效或不受支持的链接类型，如需帮助请联系作者", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    //获取名片
+                    mingPianJieGou = TiebaWeb.GetTiebaMingPian(touXiangID);
+                    if (!mingPianJieGou.HuoQuChengGong)
+                    {
+                        MessageBox.Show("头像ID获取失败，请稍后重试", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    pictureBox_touXiang.ImageLocation = $"http://tb.himg.baidu.com/sys/portrait/item/{mingPianJieGou.TouXiangID}";
+
+                    textBox_touXiang.Text = mingPianJieGou.TouXiangID;
+                    textBox_zhuXianZhangHao.Text = Tools.HuoQuZhuXianZhangHao(mingPianJieGou);
+                    textBox_yongHuMing.Text = mingPianJieGou.YongHuMing;
+
+                    break;
+
+                case 2:
+                    //先从链接本身提取
+                    touXiangID = Tieba.GuoLvTouXiangID(neiRong);
+
+                    //链接本身提取成功
+                    if (!string.IsNullOrEmpty(touXiangID))
+                    {
+                        //直接去获取名片
+                    }
+                    else
+                    {
+                        MessageBox.Show("无效或不受支持的链接类型，如需帮助请联系作者", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    //获取名片
+                    mingPianJieGou = TiebaWeb.GetTiebaMingPian(touXiangID);
+                    if (!mingPianJieGou.HuoQuChengGong)
+                    {
+                        MessageBox.Show("头像ID获取失败，请稍后重试", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    pictureBox_touXiang.ImageLocation = $"http://tb.himg.baidu.com/sys/portrait/item/{mingPianJieGou.TouXiangID}";
+
+                    textBox_touXiang.Text = mingPianJieGou.TouXiangID;
+                    textBox_zhuXianZhangHao.Text = Tools.HuoQuZhuXianZhangHao(mingPianJieGou);
+                    textBox_yongHuMing.Text = mingPianJieGou.YongHuMing;
+
+                    break;
+
+                case 3:
+                    if (!long.TryParse(new Regex("[0-9]{8,}").Match(neiRong).Value, out long tiebaHao))
+                    {
+                        MessageBox.Show("贴吧号是纯数字，请使用最新版贴吧客户端复制", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    TiebaYongHuSouSuoJieGou tiebaYongHuSouSuoJieGou = TiebaApp.TiebaYongHuSouSuo(tiebaHao);
+                    if (!tiebaYongHuSouSuoJieGou.HuoQuChengGong)
+                    {
+                        MessageBox.Show("贴吧号获取失败，请10秒后重试", "笨蛋雪说：", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    pictureBox_touXiang.ImageLocation = $"http://tb.himg.baidu.com/sys/portrait/item/{tiebaYongHuSouSuoJieGou.TouXiangID}";
+
+                    textBox_touXiang.Text = tiebaYongHuSouSuoJieGou.TouXiangID;
+                    textBox_zhuXianZhangHao.Text = Tools.HuoQuZhuXianZhangHao(tiebaYongHuSouSuoJieGou);
+                    textBox_yongHuMing.Text = tiebaYongHuSouSuoJieGou.YongHuMing;
+
+                    break;
+            }
+        }
+
+        private void comboBox_ziDong_leiXing_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

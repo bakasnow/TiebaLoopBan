@@ -9,7 +9,7 @@ namespace TiebaLoopBan
         {
             JieGou jieGou = new JieGou();
 
-            DataTable dt = Form1.access.GetDataTable($"select top 1 * from 封禁列表 where ID={id}");
+            DataTable dt = DB.access.GetDataTable($"select top 1 * from 封禁列表 where ID={id}");
             if (dt.Rows.Count == 0)
             {
                 return jieGou;
@@ -17,7 +17,7 @@ namespace TiebaLoopBan
 
             jieGou.ID = Convert.ToString(dt.Rows[0]["ID"]);
             jieGou.ZhuXianZhangHao = Convert.ToString(dt.Rows[0]["用户名"]);
-            jieGou.TouXiang = Convert.ToString(dt.Rows[0]["头像"]);
+            jieGou.TouXiangID = Convert.ToString(dt.Rows[0]["头像"]);
             jieGou.YongHuMing = Convert.ToString(dt.Rows[0]["用户名"]);
             jieGou.TiebaName = Convert.ToString(dt.Rows[0]["贴吧名"]);
             jieGou.ZuiHouFengJinShiJian = Convert.ToString(dt.Rows[0]["最后封禁时间"]);
@@ -31,7 +31,7 @@ namespace TiebaLoopBan
         {
             public string ID;
             public string ZhuXianZhangHao;
-            public string TouXiang;
+            public string TouXiangID;
             public string YongHuMing;
             public string TiebaName;
             public string ZuiHouFengJinShiJian;

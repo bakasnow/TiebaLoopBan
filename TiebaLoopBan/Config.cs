@@ -6,7 +6,7 @@
         public const string Vname = "tlb";
         public static string Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
         public const string DataBaseVersion = "1.4.0.119";//这个不跟软件版本
-        public const string QunLianJie = "https://jq.qq.com/?_wv=1027&k=AFbQe7pl";
+        public const string QunLianJie = "https://jq.qq.com/?_wv=1027&k=Z8BgWXuQ";
 
         //基本参数
         public static bool Stop = true;//主线程控制
